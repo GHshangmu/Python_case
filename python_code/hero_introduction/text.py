@@ -1,0 +1,8 @@
+all = Button(root, text='全部', command=lambda: display_hero('all'))
+is_tank = Button(root, text='坦克', command=lambda: display_hero('is_tank'))
+is_warrior = Button(root, text='战士', command=lambda: display_hero('is_warrior'))
+is_assa = Button(root, text='刺客', command=lambda: display_hero('is_assa'))
+is_master = Button(root, text='法师', command=lambda: display_hero('is_master'))
+is_archer = Button(root, text='射手', command=lambda: display_hero('is_archer'))
+is_sup = Button(root, text='辅助', command=lambda: display_hero('is_sup'))
+commit = Button(root, text='确定', command=lambda: display_hero('commit'))
