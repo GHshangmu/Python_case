@@ -1,0 +1,118 @@
+-- 1、简单查询
+-- 查询全部字段信息
+select empno,ename,job,mgr,hiredate,sal,comm,deptno from t_employee;
+select * from t_employee;
+
+-- 查询所有员工的姓名、工号和岗位
+select ename,empno,job from t_employee;
+
+-- 查询本公司所有岗位
+select job from t_employee;
+-- 去重
+select distinct job from t_employee;
+
+
+-- 查询所有员工的年薪
+select ename,sal*12 from t_employee;
+-- 起别名，让查询结果更直观
+select ename,sal*12 as totalSal from t_employee;
+select ename,sal*12 totalSal from t_employee;
+
+-- 查询结果的拼接显示
+select concat(ename,"的年薪为",sal*12,"美元") from t_employee;
+-- 也可以配合别名一起使用
+select concat(ename,"的年薪为",sal*12,"美元") as totalSal from t_employee;
+
+
+-- 2、条件查询
+-- 查询工作为 CLERK 的所有员工
+select * from t_employee where job = 'CLERK';
+
+-- 查询工作为 CLERK ，并且薪水大于800的员工信息
+select * from t_employee where job = 'CLERK' and sal > 800;
+select * from t_employee where job = 'CLERK' && sal > 800;
+
+-- 查询薪水在800和1500之间的员工信息
+select * from t_employee where sal between 800 and 1500;
+-- 或者
+select * from t_employee where sal>=800 and sal<=1500;
+-- 注意这是一个前闭后闭的集合
+
+-- 查询薪水不在800和1500之间的员工信息
+select * from t_employee where sal not between 800 and 1500;
+select * from t_employee where sal >1500 or sal<800;
+
+-- 查询mgr为null的员工的信息
+select * from t_employee where mgr is null;
+
+-- 查询comm奖金不为null的员工的信息
+select * from t_employee where comm is not null;
+
+
+-- 查询工号不是7521、7782、7566和7788的员工信息
+select * from t_employee where empno not in (7521,7782,7566,7788);
+select * from t_employee where empno != 7521 && empno != 7782 && empno != 7566 and empno != 7788;
+-- 注意，在使用not in时，如果后面跟的集合中存在NULL，则不会有任何的查询结果
+
+-- 查询员工姓名中以A开头的员工的信息
+select * from t_employee where ename like 'A%';
+
+-- 查询员工姓名中第二个字母为A的员工的信息
+select * from t_employee where ename like '_A%';
+
+-- 练习：查询员工姓名中含A的员工的信息
+select * from t_employee where ename like '%A%';
+
+-- 3、查詢結果排序
+-- 查询所有员工信息，并将员工按照工资的升序排列
+select * from t_employee order by sal [asc];
+
+-- 查询所有员工信息，并将员工按照工资的降序排列
+select * from t_employee order by sal desc;
+
+-- 多字段排序：查询所有员工信息，并将员工按照工资的升序排列，若工资相同，則按照入职日期降序排序
+select * from t_employee order by sal asc,hiredate desc;
+
+-- 4、限制数据查询数量（分页查询）
+-- 查询奖金为null的前两条记录
+select * from t_employee where comm is null limit 0,2;
+-- 這裏的0爲所要查詢的數據的下標，下標從0開始表示第一條，後面的2表示查詢的記錄的條數
+
+-- 分頁查詢全部員工信息，每頁查詢5條
+select * from t_employee limit 0,5;
+select * from t_employee limit 5,5;
+select * from t_employee limit 10,5;
+-- 如果客戶端發送來的數據是頁碼和每頁條數，則公式爲limit （頁碼­1）*每頁條數，每頁條數
+
+-- 5、統計函數
+-- 查询公司全部人数
+select count(*) from t_employee;
+
+-- 查询公司领取奖金的人数
+select count(comm) from t_employee where comm != 0;
+-- 注意這裏的where條件，排除獎金字段有值但爲0的情況
+
+-- 查询员工领取奖金的平均值
+select avg(comm) from t_employee where comm != 0;
+
+-- 查询所有员工工资的总和
+select sum(sal) from t_employee;
+
+-- 练习：查询员工领取奖金的总和
+select sum(comm) from t_employee where comm != 0;
+
+-- 查询员工中最高工资和最低工资
+select max(sal),min(sal) from t_employee;
+
+-- 分组数据查询
+-- 查看每个部门员工的工资总和
+select deptno,sum(sal) from t_employee group by deptno;
+
+-- 查询每个部门员工的人数、工资总和、平均工资、最高工资和最低工资
+select deptno,count(*),sum(sal),avg(sal),max(sal),min(sal) from t_employee group by deptno;
+
+-- 按照部门编号和入职日期分組，统计每组的工资总和、平均工资等
+select deptno,hiredate,count(*),sum(sal),avg(sal),max(sal),min(sal) from t_employee group by deptno,hiredate;
+
+-- 按照部门编号分組，查寻每組工资总和大于2000的部门的人数、总工资、平均工资。
+select deptno,count(*),sum(sal),avg(sal) from t_employee group by deptno having avg(sal) > 2000;
