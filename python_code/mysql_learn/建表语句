@@ -1,0 +1,47 @@
+-- 建表语句
+-- 1、创建学生表，要求有学生编号，用户名，年龄
+create table student_1(
+    sid int ,
+    name varchar(20),
+    age int
+);
+
+-- 2、创建学生表，要求有学生编号、身份证号码、用户名、身高（保留两位小数)、生日
+create table student_2(
+    sid int ,
+    pid char(18),
+    name varchar(20),
+    height double(3,2),
+    birthday date
+);
+
+-- 3、创建学生表，要求学生编号不能为null，并且唯一，身份证号码唯一，用户名不能为null，身高默认值是0.0，生日默认值是1990-0-0
+create table student_3(
+    sid int unique not null,
+    pid char(18) unique,
+    name varchar(20) not null,
+    height double(3,2) default 0.0,
+    birthday date default '1990-0-0'
+);
+
+-- 主键：用来唯一的确定一条记录，在约束上，等于非空+唯一
+-- 4、创建学生表，将学号作为主键，其他不变
+create table student_4(
+    sid int primary key,
+    pid char(18) unique,
+    name varchar(20) not null,
+    height double(3,2) default 0.0,
+    birthday date default '1990-0-0'
+);
+
+-- 外键：如果一个表中引用了其他表的主键，该字段称为这个表的外键,外键的添加方式：
+ALTER TABLE `diss` ADD CONSTRAINT `fk` FOREIGN KEY (`sid`) REFERENCES `student` (`sid`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- 5、创建学习表，将学号作为主键并自增
+create table student_3(
+    sid int primary key auto increment,
+    pid char(18) unique,
+    name varchar(20) not null,
+    height double(3,2) default 0.0,
+    birthday date default '1990-0-0'
+);

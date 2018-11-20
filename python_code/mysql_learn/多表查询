@@ -1,0 +1,222 @@
+-- 1、笛卡儿积
+select * from t_dept,t_employee;
+
+-- 2、内连接
+-- 2.1、特殊：自连接：查询每个员工的姓名、职位和领导姓名
+-- （1）
+SELECT
+	t1.ename,
+	t1.job,
+	t2.ename
+FROM
+	t_employee t1,
+	t_employee t2
+WHERE
+	t1.mgr = t2.empno;
+-- （2）
+SELECT
+	t1.ename,
+	t1.job,
+	t2.ename
+FROM
+	t_employee t1
+INNER JOIN t_employee t2 ON t1.mgr = t2.empno;
+
+-- 2.2、查询每个员工的编号、姓名、职位、部门名称和部门所在位置
+-- （1）
+SELECT
+	t.empno,
+	t.ename,
+	t.job,
+	d.dname,
+	d.loc
+FROM
+	t_dept d,
+	t_employee t
+WHERE
+	d.deptno = t.deptno;
+-- （2）
+SELECT
+	t.empno,
+	t.ename,
+	t.job,
+	d.dname,
+	d.loc
+FROM
+	t_dept d
+INNER JOIN t_employee t ON d.deptno = t.deptno;
+
+-- 2.3、查询每个员工的编号、姓名、基本工资、职位、领导姓名、部门名称和部门所在位置
+-- （1）
+SELECT
+	t1.empno,
+	t1.ename,
+	t1.sal,
+	t1.job,
+	t2.ename,
+	d.dname,
+	d.loc
+FROM
+	t_dept d,
+	t_employee t1,
+	t_employee t2
+WHERE
+	d.deptno = t1.deptno
+AND t1.mgr = t2.empno;
+-- （2）
+SELECT
+	t1.empno,
+	t1.ename,
+	t1.sal,
+	t1.job,
+	t2.ename,
+	d.dname,
+	d.loc
+FROM
+	t_dept d
+INNER JOIN t_employee t1 ON d.deptno = t1.deptno
+INNER JOIN t_employee t2 ON t1.mgr = t2.empno;
+
+-- 3、外连接
+-- 3.1、左外连接：查询每个员工的姓名、职位和领导姓名
+SELECT
+	t1.ename,
+	t1.job,
+	t2.ename
+FROM
+	t_employee t1
+LEFT JOIN t_employee t2 ON t1.mgr = t2.empno;
+-- 从结果可以看出：左外链接=内连接+左边表中内连接之后的剩下的其他记录，右边补null
+
+-- 3.2右外连接：查询每个员工的编号、姓名、职位和部门名称和部门位置
+-- 此时我们在t_employee中新增一条记录如下：
+SELECT
+	t.empno,
+	t.ename,
+	t.job,
+	d.dname,
+	d.loc
+FROM
+	t_dept d
+RIGHT JOIN t_employee t ON t.deptno = d.deptno;
+-- 从结果可以看出：右连接时，右边的表中的数据全部取出。它等同于
+SELECT
+	t.empno,
+	t.ename,
+	t.job,
+	d.dname,
+	d.loc
+FROM
+	t_employee t
+LEFT JOIN t_dept d ON t.deptno = d.deptno;
+-- 如果sql是：
+SELECT
+	t.empno,
+	t.ename,
+	t.job,
+	d.dname,
+	d.loc
+FROM
+	t_employee t
+RIGHT JOIN t_dept d ON t.deptno = d.deptno;
+-- 查询结果为将右边的t_dept中的数据全部取出来，其他字段补null
+
+-- 4、合并查询数据记录
+-- 4.1、合并查询数据使用UNION或UNION ALL
+-- 一般用于将两张表中的记录合并，我们这里使用一张表替代。
+	SELECT
+		*
+	FROM
+		t_employee
+	WHERE
+		empno = 7369
+UNION
+	SELECT
+		*
+	FROM
+		t_employee
+	WHERE
+		empno = 7499;
+-- UNION和UNION ALL的的区别如下：
+	SELECT
+		*
+	FROM
+		t_employee
+	WHERE
+		empno = 7369
+	OR empno = 7499
+UNION
+	SELECT
+		*
+	FROM
+		t_employee
+	WHERE
+		empno = 7499
+	OR empno = 7369;
+-- 查询结果为：
+
+-- 如果使用UNION ALL：
+	SELECT
+		*
+	FROM
+		t_employee
+	WHERE
+		empno = 7369
+	OR empno = 7499
+UNION ALL
+	SELECT
+		*
+	FROM
+		t_employee
+	WHERE
+		empno = 7499
+	OR empno = 7369;
+-- 查询结果为：
+
+-- 比较两个查询结果，可以看出，UNION执行了去重的操作。而UNION ALL并没有去重。
+
+-- 5、子查询
+-- 5.1、查询工资比SMITH还要高的全部员工的信息
+SELECT
+    *
+FROM
+    t_employee
+WHERE
+    sal > (
+        SELECT
+            sal
+        FROM
+            t_employee
+        WHERE
+            ename = 'SMITH'
+    );
+-- 5.2、查询工资和职位都与WARD一样，并且不是WARD本人的员工的信息
+SELECT
+    *
+FROM
+    t_employee
+WHERE
+    (sal, job) = (
+        SELECT
+            sal,
+            job
+        FROM
+            t_employee
+        WHERE
+            ename = 'WARD'
+    )
+AND ename != 'WARD';
+-- 5.3.1、查询员工表中的员工信息，要求员工的编号都在部门表中有记录。
+SELECT
+    *
+FROM
+    t_employee
+WHERE
+    deptno IN (SELECT deptno FROM t_dept);
+-- 5.3.2、查询员工表中的员工信息，要求员工的编号不在部门表中有记录。
+SELECT
+    *
+FROM
+    t_employee
+WHERE
+    deptno NOT IN (SELECT deptno FROM t_dept);

@@ -1,0 +1,36 @@
+-- 先有学生表，结构如下：
+'''
++——-+————-+——+—–+———+—————-+
+| Field | Type | Null | Key | Default | Extra |
++——-+————-+——+—–+———+—————-+
+| id | int(11) | NO | PRI | NULL | auto_increment |
+| name | varchar(20) | YES | | NULL | |
+| age | int(11) | YES | | NULL | |
++——-+————-+——+—–+———+—————-+' ||
+
+-- 查看表的结构：
+desc student;
+
+-- 插入操作
+-- 1、插入数据
+insert into student(name,age) values('zhangsan',20);
+-- 2、插入多条数据
+insert into student(name,age) values('lisi',21),('wangwu',19),('zhaoliu',20);
+-- 3、插入别的表的查询结构，比如现在有另一张表MyStudent，字段和Student一致。
+insert into student(name,age) select name,age from mystudent
+-- 注意这里没有values这个关键字
+
+-- 修改操作
+-- 1、将1中插入的张三的年龄修改为23
+update student set age = 23 where name = 'zhangsan';
+-- 删除操作
+-- 1、删除1中插入的zhangsan这条记录
+delete from student where name = 'zhangsan';
+-- 2、删除全部数据
+delete from student;
+-- 或者
+truncate student;
+-- 两者区别：
+-- delete 将删除的条数返回，truncate则返回0
+-- delete 较慢，而truncate则速度快
+-- delete 不会改变自增值，而truncate则会讲自增值置为1从头开始
