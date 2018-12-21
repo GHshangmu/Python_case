@@ -9,8 +9,3 @@ def func(d):
         elif type(d[key]) == dict:
             print(d[key])
             func(d[key])
-
-func(d)
-
-        # if type(value) == dict:
-        #     func(value)
